@@ -1,0 +1,248 @@
+<html>
+	<head>
+		<title>stars</title>
+		<link rel="stylesheet" type="text/css" href="jquery-ui.css">
+		<style type="text/css">
+				#div{
+					width: 50%;
+					height: 80%;
+					position: fixed;
+					top: 10%;
+					left: 25%;
+				}
+				.dot{
+					width: 10px;
+					height: 10px;
+					border-radius: 50%;
+					background-color: black;
+					transition: transform 1s linear;
+					position: absolute;
+					top: 5%;
+					left: 5%;
+					box-shadow: 5px 5px 20px white;
+				}
+				#speed{
+					position: fixed;
+					top: 70px;
+					left: 20px;
+					height: 300px;
+					color: skyblue;
+				}
+				#size{
+					position: fixed;
+					top: 70px;
+					left: 80px;
+					height: 300px;
+					color: skyblue;
+				}
+				#number{
+					position: fixed;
+					top: 70px;
+					left: 150px;
+					height: 300px;
+					color: skyblue;
+				}
+				#x{
+					position: absolute;
+					top: 50px;
+					left: 80%;
+					height: 300px;
+					color: skyblue;
+				}
+				
+				#y{
+					position: absolute;
+					top: 50px;
+					left: 85%;
+					height: 300px;
+					color: skyblue;
+				}
+				#back:hover, #color:hover{
+					cursor: pointer;
+				}
+				
+		</style>
+	</head>
+	<body>
+		<div id="size">size</div>
+		<div id="speed">speed</div>
+		<div id="number">number</div>
+		<div id="x">area X</div>
+		<div id="y">area Y</div>
+		<div id="back">Change Background</div>
+		<div id="color">Colourful</div>
+		<form>
+		  <input type="radio" id="follow" name="gender" value="Follow"> Follow<br>
+		  <input type="radio" id="random" name="gender" value="Random" checked> Random<br>
+		</form> 
+		<div id='div'>
+			<div id="ax"></div>
+		</div>
+		
+		
+		<script type="text/javascript" src="jquery.js"></script>
+		<script type="text/javascript" src="jquery-ui.js"></script>
+		<script type="text/javascript">
+			var i = 0;
+			var speed = 1;
+			var random = 1;
+			var xval = 400;
+			var yval = 400;
+			var back = 1;
+			var color = 0;
+			var r;
+			$(document).ready(function(){
+				$("#speed").hide();
+				dots(50);
+				$("#back").click(function(){
+					if(back == 1)
+					{
+						$('body').css("background-color", "black").css("color", 'white');
+						$(".dot").css("background-color", "white");
+						back = 0;
+					}
+					else
+					{
+						$('body').css("background-color", "white").css("color", 'black');
+						$(".dot").css("background-color", "black");
+						back = 1;
+					}
+					
+				});
+				$("#color").click(function(){
+					if(color == 0)
+					{
+						color = 1;
+						$(this).text("not-colorful")
+					}
+					else{
+						color = 0;
+						$(this).text("Colorful")
+					}
+				});
+			});
+			$("#follow").click(function(){
+				random = 0;
+				$(".dot").css('transition', 'transform ' + 1 + 's linear');
+				$("#speed").show();
+			});
+			$("#random").click(function(){
+				random = 1;
+				$("#speed").hide();
+			});
+$("#speed").slider( {
+	orientation: "vertical",
+	slide: function(event, uis){
+		speed = uis.value;
+		$(".dot").css('transition', 'transform ' + speed/10 + 's linear');
+	},
+	min: 5,
+	max: 100,
+	value: 1,
+} );
+$("#number").slider( {
+	orientation: "vertical",
+	slide: function(event, uin){
+		nmbr = uin.value;
+		$('.dot').detach();
+		dots(nmbr);
+		if(back == 1)
+		{
+			$(".dot").css('background-color', "black");
+		}
+		else{
+			$(".dot").css('background-color', "white");
+		}
+	},
+	min: 1,
+	max: 500,
+	value: 5,
+} );
+
+			function move(name)
+			{
+				setInterval(function(){
+					var x = (Math.random()*xval);
+					var y = (Math.random()*yval);
+					var w = Math.random();
+					var time = Math.random()*5;
+					var r = Math.random()*100;
+					$(name).css("transform", 'translateX('+ x +'px) translateY(' + y + 'px) scale('+w+')');
+					if(random == 1)
+					{
+						$(name).css('transition', 'transform ' + time + 's');
+					}
+					
+				}, 500);
+			}
+		function dots(no)
+		{
+			for(i=1; i<=no; i++)
+			{
+				$("#ax").prepend($('<div id="dot'+ i +'" class="dot"></div>'));
+			}
+			for(i=1; i<=no; i++)
+			{
+				var name = "#dot" + i;
+				move(name);
+				change_color(name);
+				
+			}
+		}
+		function change_color(id)
+		{
+			setInterval(function(){
+				var a = Math.random()*500;
+				var c = Math.random()*500;
+				var b = Math.random()*500;
+				var d = Math.random();
+				if(color == 1)
+				{
+					$(id).css('background-color', 'rgba('+a+', '+b+', '+c+', '+d+')').css('box-shadow', '5px 5px 10px rgba('+a+', '+b+', '+c+', '+d+')');
+				}
+				else if(color == 0 && back == 1){
+					$(id).css('background-color', 'black').css('box-shadow', '5px 5px 10px white');
+				}
+				else if(color == 0 && back == 0){
+					$(id).css('background-color', 'white').css('box-shadow', '5px 5px 10px white');
+				}
+			}, 200);
+		}
+		
+			
+$("#size").slider( {
+	orientation: "vertical",
+	slide: function(event, ui){
+		var size = ui.value;
+		$(".dot").css('width', size).css('height', size).css('border-radius', size);
+	},
+	min: 2,
+	max: 50,
+	value: 10
+} );
+$("#x").slider( {
+	orientation: "vertical",
+	slide: function(event, ui){
+		 xval = ui.value;
+		 $(".dot").css('margin-left', -xval*.1);
+		
+	},
+	min: 10,
+	max: 1200,
+	value: 400
+} );
+$("#y").slider( {
+	orientation: "vertical",
+	slide: function(event, ui){
+		 yval = ui.value;
+		$(".dot").css('margin-top', -yval*.1);
+	},
+	min: 10,
+	max: 1200,
+	value: 400
+} );
+
+
+		</script>
+	</body>
+</html>
